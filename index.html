@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Қонақүй Брондау Жүйесі</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .role-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .role-btn.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .role-btn i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+
+        .link {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        /* Main App */
+        .app {
+            display: none;
+        }
+
+        .app.active {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left h2 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gray);
+            font-weight: 500;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            background: var(--light);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        /* Content */
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .stat-card i {
+            font-size: 32px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Rooms Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .room-card {
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .room-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .room-card-body {
+            padding: 20px;
+        }
+
+        .room-card-body h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .room-info {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .room-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .room-price {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Search and Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .align-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 10px;
+        }
+
+        .mb-2 {
+            margin-bottom: 10px;
+        }
+
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-header">
+                <h1><i class="fas fa-hotel"></i> Қонақүй Жүйесі</h1>
+                <p>Брондау жүйесіне қош келдіңіз</p>
+            </div>
+
+            <div id="loginForm">
+                <div class="role-selector">
+                    <div class="role-btn active" data-role="client">
+                        <i class="fas fa-user"></i>
+                        <div>Клиент</div>
+                    </div>
+                    <div class="role-btn" data-role="admin">
+                        <i class="fas fa-user-shield"></i>
+                        <div>Әкімші</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Пайдаланушы аты</label>
+                    <input type="text" id="loginUsername" class="form-control" placeholder="Пайдаланушы атын енгізіңіз">
+                </div>
+
+                <div class="form-group">
+                    <label>Құпия сөз</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Құпия сөзді енгізіңіз">
+                </div>
+
+                <button class="btn btn-primary" onclick="app.login()">
+                    <i class="fas fa-sign-in-alt"></i> Кіру
+                </button>
+
+                <div class="text-center mt-3">
+                    <span class="link" onclick="app.showRegister()">Тіркелу</span>
+                </div>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label>Толық аты</label>
+                    <input type="text" id="regName" class="form-control" placeholder="Толық атыңызды енгізіңіз">
+                </div>
+
+                <div class="form-group">
+                    <label>Пайдаланушы аты</label>
+                    <input type="text" id="regUsername" class="form-control" placeholder="Пайдаланушы атын таңдаңыз">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="+7 700 000 00 00">
+                </div>
+
+                <div class="form-group">
+                    <label>Құпия сөз</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="Құпия сөзді ойлап табыңыз">
+                </div>
+
+                <button class="btn btn-primary" onclick="app.register()">
+                    <i class="fas fa-user-plus"></i> Тіркелу
+                </button>
+
+                <div class="text-center mt-3">
+                    <span class="link" onclick="app.showLogin()">Кіру бетіне оралу</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client App -->
+    <div id="clientApp" class="app">
+        <div class="container">
+            <div class="header">
+                <div class="header-left">
+                    <h2><i class="fas fa-hotel"></i> Қонақүй Брондау</h2>
+                    <p>Ең жақсы бөлмелерді брондаңыз</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar" id="clientAvatar">K</div>
+                        <div>
+                            <div style="font-weight: 600;" id="clientName">Клиент</div>
+                            <div style="font-size: 12px; color: var(--gray);">Клиент</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="app.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Шығу
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="clientRooms">
+                    <i class="fas fa-bed"></i> Бөлмелер
+                </button>
+                <button class="nav-tab" data-tab="clientBookings">
+                    <i class="fas fa-calendar-check"></i> Менің брондауларым
+                </button>
+                <button class="nav-tab" data-tab="clientProfile">
+                    <i class="fas fa-user-circle"></i> Профиль
+                </button>
+            </div>
+
+            <div class="content">
+                <!-- Client Rooms -->
+                <div id="clientRooms" class="tab-content active">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Бөлме түрі</label>
+                            <select id="filterType" class="form-control" onchange="app.filterRooms()">
+                                <option value="">Барлығы</option>
+                                <option value="Стандарт">Стандарт</option>
+                                <option value="Люкс">Люкс</option>
+                                <option value="Апартамент">Апартамент</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Сыйымдылық</label>
+                            <select id="filterCapacity" class="form-control" onchange="app.filterRooms()">
+                                <option value="">Барлығы</option>
+                                <option value="2">2 адам</option>
+                                <option value="4">4 адам</option>
+                                <option value="6">6 адам</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Максимум бағасы</label>
+                            <input type="number" id="filterPrice" class="form-control" placeholder="0" onchange="app.filterRooms()">
+                        </div>
+                    </div>
+                    <div id="roomsContainer" class="rooms-grid"></div>
+                </div>
+
+                <!-- Client Bookings -->
+                <div id="clientBookings" class="tab-content">
+                    <h3 class="mb-4">Менің брондауларым</h3>
+                    <div id="clientBookingsContainer"></div>
+                </div>
+
+                <!-- Client Profile -->
+                <div id="clientProfile" class="tab-content">
+                    <h3 class="mb-4">Профиль мәліметтері</h3>
+                    <div id="profileContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin App -->
+    <div id="adminApp" class="app">
+        <div class="container">
+            <div class="header">
+                <div class="header-left">
+                    <h2><i class="fas fa-shield-alt"></i> Әкімші панелі</h2>
+                    <p>Қонақүй басқару жүйесі</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">Ә</div>
+                        <div>
+                            <div style="font-weight: 600;">Әкімші</div>
+                            <div style="font-size: 12px; color: var(--gray);">Басқарушы</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="app.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Шығу
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="adminDashboard">
+                    <i class="fas fa-chart-line"></i> Бақылау тақтасы
+                </button>
+                <button class="nav-tab" data-tab="adminRooms">
+                    <i class="fas fa-bed"></i> Бөлмелер
+                </button>
+                <button class="nav-tab" data-tab="adminBookings">
+                    <i class="fas fa-calendar-check"></i> Брондаулар
+                </button>
+                <button class="nav-tab" data-tab="adminClients">
+                    <i class="fas fa-users"></i> Клиенттер
+                </button>
+                <button class="nav-tab" data-tab="adminReports">
+                    <i class="fas fa-file-invoice-dollar"></i> Есептер
+                </button>
+                <button class="nav-tab" data-tab="adminSettings">
+                    <i class="fas fa-cog"></i> Параметрлер
+                </button>
+            </div>
+
+            <div class="content">
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" class="tab-content active">
+                    <h3 class="mb-4">Жалпы статистика</h3>
+                    <div id="statsContainer" class="stats-grid"></div>
+                    <h3 class="mb-4">Соңғы брондаулар</h3>
+                    <div id="recentBookings"></div>
+                </div>
+
+                <!-- Admin Rooms -->
+                <div id="adminRooms" class="tab-content">
+                    <div class="d-flex justify-between align-center mb-4">
+                        <h3>Бөлмелерді басқару</h3>
+                        <button class="btn btn-primary" onclick="app.showAddRoomModal()">
+                            <i class="fas fa-plus"></i> Жаңа бөлме
+                        </button>
+                    </div>
+                    <div id="adminRoomsContainer"></div>
+                </div>
+
+                <!-- Admin Bookings -->
+                <div id="adminBookings" class="tab-content">
+                    <h3 class="mb-4">Барлық брондаулар</h3>
+                    <div id="adminBookingsContainer"></div>
+                </div>
+
+                <!-- Admin Clients -->
+                <div id="adminClients" class="tab-content">
+                    <h3 class="mb-4">Клиенттер тізімі</h3>
+                    <div id="adminClientsContainer"></div>
+                </div>
+
+                <!-- Admin Reports -->
+                <div id="adminReports" class="tab-content">
+                    <h3 class="mb-4">Қаржылық есептер</h3>
+                    <div id="reportsContainer"></div>
+                </div>
+
+                <!-- Admin Settings -->
+                <div id="adminSettings" class="tab-content">
+                    <h3 class="mb-4">Жүйе параметрлері</h3>
+                    <div id="settingsContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> Брондау жасау</h3>
+                <button class="close-modal" onclick="app.closeModal('bookingModal')">&times;</button>
+            </div>
+            <div id="bookingModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Room Modal -->
+    <div id="roomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="roomModalTitle"><i class="fas fa-bed"></i> Бөлме</h3>
+                <button class="close-modal" onclick="app.closeModal('roomModal')">&times;</button>
+            </div>
+            <div id="roomModalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
